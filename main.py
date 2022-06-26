@@ -6,17 +6,19 @@ s1 = Sudoku()
 while menuchoice != 5:
 
     if menuchoice == 1:
+        # generate blank grid
         newsize = int(input("What size grid? "))
         s1.resetgrid(newsize)
         s1.print_grid()
     if menuchoice == 2:
         newsize = int(input("What size grid? "))
         s1.resetgrid(newsize)
+        # generate filled grid then remove until clue minimum is reached
         s1.generate_sol(s1.grid)
         s1.remove_numbers_from_grid()
-        print("done")
         s1.print_grid()
     if menuchoice == 3:
+        # complete partial or empty grid
         s1.generate_sol(s1.grid)
         s1.print_grid()
 
