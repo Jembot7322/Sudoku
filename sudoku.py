@@ -169,31 +169,3 @@ class Sudoku:
                 iterations -= 1
         return
 
-    def main_menu(self):
-        """
-        main menu for user interaction
-        :return: None
-        """
-        print("Welcome to the Super Sudoku Solver! ")
-        menuchoice = 0
-        while menuchoice != 5:
-
-            if menuchoice == 1:
-                newsize = int(input("What size grid? "))
-                self.resetgrid(newsize)
-                self.print_grid()
-            if menuchoice == 2:
-                newsize = int(input("What size grid? "))
-                self.resetgrid(newsize)
-                self.generate_sol(self.grid)
-                self.remove_numbers_from_grid()
-                self.print_grid()
-            if menuchoice == 3:
-                self.generate_sol(self.grid)
-                self.print_grid()
-
-            print("1 - Generate Empty Puzzle\n"
-                  "2 - Generate Partial Puzzle\n"
-                  "3 - Solve Puzzle\n"
-                  "4 - Exit")
-            menuchoice = int(input("Please input choice: "))
