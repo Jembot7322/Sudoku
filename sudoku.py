@@ -18,6 +18,7 @@ class Sudoku:
         """
         initializes grid of zeros with input dimension
         """
+        # default 9 x 9 sudoku represented by list of lists
         self.grid = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -65,19 +66,21 @@ class Sudoku:
             print('-------------------')
         return
 
-    def get_non_empty_squares(self, grid):
+    def get_shuffled_squares(self, grid):
         """
         returns shuffled list of numbers that are to be placed in the grid
         :param grid: list of lists representing partially filled sudoku grid
         :return:
         """
-        non_empty_squares = []
+        filled_squares = []
         for i in range(len(grid)):
             for j in range(len(grid)):
                 if grid[i][j] != 0:
-                    non_empty_squares.append((i, j))
-        shuffle(non_empty_squares)
-        return non_empty_squares
+                    filled_squares.append((i, j))
+        # randomize list of filled locations
+        shuffle(filled_squares)
+
+        return filled_squares
 
     def find_empty_square(self, grid):
         """
@@ -96,10 +99,10 @@ class Sudoku:
         Checks the row, column, and sub-box for the number to see if it can be placed
         :return: True if valid to place number there
         """
-        # check row
+        # check grid row
         if num in grid[row]:
             return False
-        # check column
+        # check grid column
         for x in range(self.size):
             if grid[x][col] == num:
                 return False
@@ -119,7 +122,7 @@ class Sudoku:
         :param grid: partial or empty grid to be solved
         :return: completed Sudoku grid
         """
-        number_list = list(range(1, self.size + 1))
+        rand_list = list(range(1, self.size + 1))
 
         for i in range(0, self.size ** 2):
             row = i // self.size
@@ -127,10 +130,11 @@ class Sudoku:
 
             # find next empty cell
             if grid[row][col] == 0:
-                shuffle(number_list)
-                for number in number_list:
+                shuffle(rand_list)
+                for number in rand_list:
                     if self.checkspot(grid, row, col, number):
                         grid[row][col] = number
+
                         if not self.find_empty_square(grid):
                             self.solcounter += 1
                             return True
@@ -146,14 +150,15 @@ class Sudoku:
         removes numbers from the puzzle until minimum clues are left to solve
         :return: list of lists representing sudoku grid with partial solution
         """
-        non_empty_squares = self.get_non_empty_squares(self.grid)
-        non_empty_squares_count = len(non_empty_squares)
+        # number of filled in spots
+        filled_spots = self.get_shuffled_squares(self.grid)
+        filled_spot_count = len(filled_spots)
         iterations = 3
 
         # clue count is how many minimum spaces filled for grid size
-        while iterations > 0 and non_empty_squares_count <= self.cc:
-            row, col = non_empty_squares.pop()
-            non_empty_squares_count -= 1
+        while iterations > 0 and filled_spot_count != self.cc:
+            row, col = filled_spots.pop()
+            filled_spot_count -= 1
             # might need to put the value back if there is more than one solution
             removed_square = self.grid[row][col]
             self.grid[row][col] = 0
@@ -165,7 +170,6 @@ class Sudoku:
             # if there is more than one solution, put the last removed cell back into the grid
             if self.solcounter != 1:
                 self.grid[row][col] = removed_square
-                non_empty_squares_count += 1
+                filled_spot_count += 1
                 iterations -= 1
         return
-
